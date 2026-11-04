@@ -15,6 +15,7 @@ authors:
   - name: "Meenakshi "
     matriculation number: "xy"
 format: pdf
+bibliography: references.bib
 ---
 
 # Introduction
@@ -28,6 +29,9 @@ format: pdf
 # Data mitigation
 
 # Model mitigation
+
+Concerning the mitigation of shortcut learning through model features, 
+
 
 # Conclusion
 
