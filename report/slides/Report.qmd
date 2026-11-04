@@ -17,4 +17,20 @@ authors:
 format: pdf
 ---
 
+# Introduction
+
+# Literature Review
+
+# Dataset Preparation
+
+# Model Training and Evaluation
+
+# Data mitigation
+
+# Model mitigation
+
+# Conclusion
+
+# References
+
 
