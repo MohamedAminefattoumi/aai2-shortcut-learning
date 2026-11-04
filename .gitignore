@@ -218,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific: MNIST/CIFAR downloads (re-downloaded by code)
+data/
+# Saved model weights, too big for Git
+*.pt
+*.pth
+# Local copies of the guide and papers
+docs/*.pdf
