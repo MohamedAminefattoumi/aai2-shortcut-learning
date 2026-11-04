@@ -219,7 +219,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Project: large / generated files (results/ IS committed)
+# Project-specific: MNIST/CIFAR downloads (re-downloaded by code)
 data/
-checkpoints/
+# Saved model weights, too big for Git
 *.pt
+*.pth
+# Local copies of the guide and papers
+docs/*.pdf
