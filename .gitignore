@@ -226,3 +226,5 @@ data/
 *.pth
 # Local copies of the guide and papers
 docs/*.pdf
+
+
