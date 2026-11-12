@@ -9,7 +9,7 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset
 
 
-def add_patch(img: torch.Tensor, k: int, size: int = 3) -> torch.Tensor:
+def add_patch(img: torch.Tensor, k: int, size: int = 3) -> torch.Tensor: #paints the white square at the position of a class.
     """img: (C, H, W) in [0, 1]; k: class whose position is used."""
     img = img.clone()                 # never modify the original image
     row = 1 if k < 5 else 24          # top edge for 0-4, bottom edge for 5-9
@@ -18,7 +18,7 @@ def add_patch(img: torch.Tensor, k: int, size: int = 3) -> torch.Tensor:
     return img
 
 
-def _make_dataset(n: int, mode: str, seed: int) -> TensorDataset:
+def _make_dataset(n: int, mode: str, seed: int) -> TensorDataset: #builds one dataset in one of three modes: no patch (clean), patch at the true class (aligned), patch at label + 1 (conflicting).
     """mode: 'clean' (no patch), 'aligned' (true class), 'conflicting' (label + 1)."""
     g = torch.Generator().manual_seed(seed)
     images = torch.rand(n, 1, 28, 28, generator=g) * 0.5   # dark noise, so the patch stands out
@@ -39,7 +39,7 @@ def _make_dataset(n: int, mode: str, seed: int) -> TensorDataset:
     return TensorDataset(images, labels, shortcut_labels)
 
 
-def get_fake_loaders(batch_size: int = 128, n_train: int = 2000, n_test: int = 500) -> dict:
+def get_fake_loaders(batch_size: int = 128, n_train: int = 2000, n_test: int = 500) -> dict: #builds all five datasets and wraps each in a DataLoader.
     """Same keys and batch format as the real get_loaders()."""
     specs = {
         "train_clean":      (n_train, "clean",       0, True),
