@@ -58,8 +58,16 @@ def get_datasets(p=0.9, seed=0, root="data", n_train=None):
 
 def get_loaders(batch_size=128, p=0.9, seed=0, root="data", n_train=None):
     """Same keys and batch format as get_fake_loaders(), plus test_random."""
+    return make_loaders(get_datasets(p, seed, root, n_train), batch_size, seed)
+
+
+def make_loaders(datasets, batch_size=128, seed=0):
+    """Wrap each dataset in a DataLoader. Training sets are shuffled, test sets are not.
+
+    Shared by get_loaders() and data_mitigations.get_mitigated_loaders().
+    """
     loaders = {}
-    for name, dataset in get_datasets(p, seed, root, n_train).items():
+    for name, dataset in datasets.items():
         is_train = name.startswith("train")
         # A seeded generator makes the shuffling order reproducible.
         generator = torch.Generator().manual_seed(seed)
