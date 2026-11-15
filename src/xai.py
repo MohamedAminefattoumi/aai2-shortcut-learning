@@ -2,6 +2,10 @@
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
+import numpy as np
+import lime
+from lime import lime_image
+
 
 
 class GradCAM:
@@ -291,3 +295,7 @@ def visualize_integrated_gradients(
 
     plt.tight_layout()
     plt.show()
+
+    # LIME
+
+
