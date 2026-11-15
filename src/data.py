@@ -13,7 +13,7 @@ import torch
 from torch.utils.data import DataLoader, Subset, TensorDataset
 from torchvision import datasets
 
-from src.shortcuts import choose_color_ids, colorize
+from shortcuts import choose_color_ids, colorize
 
 
 def load_mnist(train, root="data"):
