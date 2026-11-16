@@ -1,3 +1,4 @@
+
 """Run the full mitigation grid and write one row per run to results/results.csv.
 
 Every run uses the same model, optimizer and hyperparameters. Only the
@@ -19,7 +20,7 @@ from src.data_mitigations import get_mitigated_loaders
 from src.evaluate import evaluate
 from src.mitigations import reweighting_loss
 from src.models import build_model
-from src.train import set_seed, train
+from src.train import set_seed, train, save_checkpoint
 
 # Fixed settings, identical for every run.
 MODEL = "cnn"           # SmallCNN from models.py
@@ -56,6 +57,12 @@ def run_one(p, mitigation, seed, epochs, n_train):
     images, _, _ = next(iter(loaders["train_biased"]))
     model = build_model(MODEL, images)
     train(model, loaders["train_biased"], epochs=epochs, lr=LR, loss_fn=loss_fn)
+
+    # Save only the four models needed for XAI.
+    if p == 0.99 and seed == 0 and n_train is None:
+        checkpoint_path = f"checkpoints/{mitigation}_p{int(p * 100):03d}_seed{seed}.pth"
+        save_checkpoint(model, checkpoint_path)
+        print(f"Checkpoint saved: {checkpoint_path}")
 
     aligned = evaluate(model, loaders["test_aligned"])
     conflicting = evaluate(model, loaders["test_conflicting"])

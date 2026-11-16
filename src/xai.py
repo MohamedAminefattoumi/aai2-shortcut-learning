@@ -1,9 +1,15 @@
+
+import os
+
 import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import numpy as np
 
 
+# ==================================================
+# GRAD-CAM
+# ==================================================
 
 class GradCAM:
     def __init__(self, model, target_layer):
@@ -19,7 +25,6 @@ class GradCAM:
 
     def save_activations(self, module, inputs, output):
         self.activations = output
-
         output.register_hook(self.save_gradients)
 
     def save_gradients(self, gradient):
@@ -34,7 +39,9 @@ class GradCAM:
             image = image.unsqueeze(0)
 
         if image.shape[0] != 1:
-            raise ValueError("Grad-CAM currently supports one image at a time.")
+            raise ValueError(
+                "Grad-CAM currently supports one image at a time."
+            )
 
         self.model.eval()
         self.model.zero_grad()
@@ -42,21 +49,25 @@ class GradCAM:
         # Forward pass
         logits = self.model(image)
 
-        # Use predicted class if no target class is provided
         if target_class is None:
             target_class = logits.argmax(dim=1).item()
 
-        # Backward pass for the selected class
+        # Backward pass
         score = logits[0, target_class]
         score.backward()
 
         # Global average pooling of gradients
-        weights = self.gradients.mean(dim=(2, 3), keepdim=True)
+        weights = self.gradients.mean(
+            dim=(2, 3),
+            keepdim=True
+        )
 
         # Weighted sum of feature maps
-        cam = (weights * self.activations).sum(dim=1, keepdim=True)
+        cam = (weights * self.activations).sum(
+            dim=1,
+            keepdim=True
+        )
 
-        # Keep positive contributions
         cam = F.relu(cam)
 
         # Resize heatmap to original image dimensions
@@ -95,7 +106,12 @@ def generate_gradcam(model, image, target_class=None):
     return heatmap, predicted_class
 
 
-def visualize_gradcam(image, heatmap, predicted_class=None):
+def visualize_gradcam(
+    image,
+    heatmap,
+    predicted_class=None,
+    save_path=None
+):
     if image.dim() == 4:
         image = image[0]
 
@@ -104,28 +120,40 @@ def visualize_gradcam(image, heatmap, predicted_class=None):
     # Convert RGB image to HWC format
     original = image.permute(1, 2, 0).numpy()
 
-    plt.figure(figsize=(10, 4))
+    heatmap = torch.as_tensor(heatmap).detach().cpu()
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 
     # Original image
-    plt.subplot(1, 2, 1)
-    plt.imshow(original)
-    plt.title("Original Image")
-    plt.axis("off")
+    axes[0].imshow(original)
+    axes[0].set_title("Original Image")
+    axes[0].axis("off")
 
-    # Grad-CAM heatmap
-    plt.subplot(1, 2, 2)
-    plt.imshow(original)
-    plt.imshow(heatmap.numpy(), cmap="jet", alpha=0.5)
+    # Grad-CAM overlay
+    axes[1].imshow(original)
+    axes[1].imshow(
+        heatmap.numpy(),
+        cmap="jet",
+        alpha=0.5
+    )
 
     title = "Grad-CAM"
+
     if predicted_class is not None:
         title += f" - Class {predicted_class}"
 
-    plt.title(title)
-    plt.axis("off")
+    axes[1].set_title(title)
+    axes[1].axis("off")
 
     plt.tight_layout()
-    plt.show()
+
+    if save_path is not None:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        fig.savefig(save_path, dpi=200, bbox_inches="tight")
+        print(f"Saved: {save_path}")
+        plt.close(fig)
+    else:
+        plt.show()
 
 
 # ==================================================
@@ -175,11 +203,13 @@ def integrated_gradients(
             baseline = baseline.unsqueeze(0)
 
         if baseline.shape != image.shape:
-            raise ValueError("Baseline and image must have the same shape.")
+            raise ValueError(
+                "Baseline and image must have the same shape."
+            )
 
     model.eval()
 
-    # Determine the target class
+    # Determine target class
     with torch.no_grad():
         logits = model(image)
 
@@ -189,7 +219,7 @@ def integrated_gradients(
     # Difference between input and baseline
     difference = image - baseline
 
-    # Accumulate gradients using the trapezoidal rule
+    # Accumulate gradients
     total_gradients = torch.zeros_like(image)
 
     for step in range(steps + 1):
@@ -211,8 +241,7 @@ def integrated_gradients(
             inputs=interpolated
         )[0]
 
-        # Trapezoidal integration:
-        # Endpoints receive half weight
+        # Trapezoidal integration
         if step == 0 or step == steps:
             total_gradients += 0.5 * gradients
         else:
@@ -230,11 +259,11 @@ def integrated_gradients(
 # INTEGRATED GRADIENTS VISUALIZATION
 # ==================================================
 
-
 def visualize_integrated_gradients(
     image,
     attributions,
-    target_class=None
+    target_class=None,
+    save_path=None
 ):
     if image.dim() == 4:
         image = image[0]
@@ -243,22 +272,35 @@ def visualize_integrated_gradients(
     attributions = attributions.detach().cpu()
 
     original = image.permute(1, 2, 0).numpy()
-    total_attribution = attributions.abs().sum(dim=0).numpy()
 
-    fig, axes = plt.subplots(2, 3, figsize=(13, 8))
+    total_attribution = (
+        attributions.abs().sum(dim=0).numpy()
+    )
+
+    fig, axes = plt.subplots(
+        2,
+        3,
+        figsize=(13, 8)
+    )
 
     for ax in axes.flat:
         ax.axis("off")
 
+    # Original image
     axes[0, 0].imshow(original)
     axes[0, 0].set_title("Original Image")
 
-    axes[0, 1].imshow(total_attribution, cmap="hot")
+    # Overall attribution
+    axes[0, 1].imshow(
+        total_attribution,
+        cmap="hot"
+    )
     axes[0, 1].set_title("Overall Attribution")
 
     channel_names = ["Red", "Green", "Blue"]
 
     for i, name in enumerate(channel_names):
+
         attribution_map = attributions[i].numpy()
 
         max_abs = max(
@@ -267,7 +309,11 @@ def visualize_integrated_gradients(
             1e-8
         )
 
-        ax = axes[0, 2] if i == 0 else axes[1, i - 1]
+        ax = (
+            axes[0, 2]
+            if i == 0
+            else axes[1, i - 1]
+        )
 
         im = ax.imshow(
             attribution_map,
@@ -291,6 +337,11 @@ def visualize_integrated_gradients(
         )
 
     plt.tight_layout()
-    plt.show()
 
-
+    if save_path is not None:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        fig.savefig(save_path, dpi=200, bbox_inches="tight")
+        print(f"Saved: {save_path}")
+        plt.close(fig)
+    else:
+        plt.show()

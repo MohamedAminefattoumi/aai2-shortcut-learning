@@ -51,6 +51,7 @@ def train(model, loader, epochs=5, lr=1e-3, loss_fn=None, device=None):
     loss_fn = loss_fn or cross_entropy_loss          # default loss is cross-entropy
     device = device or get_device()                  # automatic device selection
     model.to(device)                                 # model on the device
+    print(f"Training on: {device}")
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     history = []
 
