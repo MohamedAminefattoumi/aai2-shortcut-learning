@@ -3,9 +3,9 @@ import os
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torchvision import datasets
-from shortcuts import make_colored_mnist, choose_color_ids
-from models import build_model
-from mitigations import batch_weights, weighted_cross_entropy
+from src.shortcuts import make_colored_mnist, choose_color_ids
+from src.models import build_model
+from src.mitigations import batch_weights, weighted_cross_entropy
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 

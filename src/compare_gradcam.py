@@ -2,9 +2,9 @@
 import torch
 import matplotlib.pyplot as plt
 
-from shortcuts import make_colored_mnist
-from models import build_model
-from xai import generate_gradcam
+from src.shortcuts import make_colored_mnist
+from src.models import build_model
+from src.xai import generate_gradcam
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

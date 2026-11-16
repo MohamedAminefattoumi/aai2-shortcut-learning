@@ -2,8 +2,8 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from shortcuts import make_colored_mnist, colorize
-from models import build_model
+from src.shortcuts import make_colored_mnist, colorize
+from src.models import build_model
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
