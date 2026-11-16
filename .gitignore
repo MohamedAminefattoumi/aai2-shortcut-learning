@@ -228,3 +228,6 @@ data/
 docs/*.pdf
 
 
+
+# Output of "python -m src.run_experiments --quick" (only a code check)
+results/results_quick.csv
