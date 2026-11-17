@@ -135,8 +135,10 @@ def grouped_bars(ax, groups, labels):
         ax.bar(pos, means, width, color=COLORS[test], edgecolor=SURFACE, linewidth=1.5,
                label=TEST_NAMES[test], yerr=stds if len(groups[0]) > 1 else None,
                error_kw={"ecolor": INK_2, "elinewidth": 1, "capsize": 2})
-        for xp, m in zip(pos, means):           # direct value labels (in ink, not series colour)
-            ax.text(xp, m + 0.015, f"{100 * m:.0f}", ha="center", va="bottom", fontsize=7, color=INK_2)
+        has_bars = len(groups[0]) > 1
+        for xp, m, s in zip(pos, means, stds):   # direct value labels (in ink), above the error bar
+            ax.text(xp, m + (s if has_bars else 0) + 0.015, f"{100 * m:.0f}",
+                    ha="center", va="bottom", fontsize=7, color=INK_2)
     ax.set_xticks(x)
     ax.set_xticklabels(labels, color=INK)
 
