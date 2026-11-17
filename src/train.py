@@ -1,14 +1,3 @@
-import random
-import numpy as np
-import torch
-import torch.nn as nn
-import os
-
-def set_seed(seed=42):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-
 """Training loop shared by all experiments (baseline and mitigation).
 
 train.py only knows HOW to train. WHAT to train (model, data, loss, seed)
