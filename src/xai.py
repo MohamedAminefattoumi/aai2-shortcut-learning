@@ -240,7 +240,6 @@ def integrated_gradients(
             outputs=score,
             inputs=interpolated
         )[0]
-
         # Trapezoidal integration
         if step == 0 or step == steps:
             total_gradients += 0.5 * gradients

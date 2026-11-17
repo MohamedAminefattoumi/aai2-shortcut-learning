@@ -1,5 +1,7 @@
 
-"""Compare Grad-CAM and Integrated Gradients for all four mitigation strategies."""
+
+"""Compare Grad-CAM, Integrated Gradients and LIME
+for all four mitigation strategies."""
 
 import os
 import torch
@@ -11,6 +13,10 @@ from src.xai import (
     integrated_gradients,
     visualize_gradcam,
     visualize_integrated_gradients,
+)
+from src.lime_xai import (
+    get_explanation,
+    visualize_explanation_lime,
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -174,6 +180,21 @@ def main():
             attribution,
             prediction,
             save_path=f"{OUTPUT_DIR}/{name.lower()}_integrated_gradients.png",
+        )
+
+        # LIME
+        explanation = get_explanation(
+            image=selected_image.squeeze(0),
+            model=model,
+            device=DEVICE,
+            num_samples=1000,
+        )
+
+        visualize_explanation_lime(
+            explanation=explanation,
+            model_name=name,
+            true_label=selected_label,
+            save_path=f"{OUTPUT_DIR}/{name.lower()}_lime.png",
         )
 
         print(f"{name}: prediction = {prediction}")
