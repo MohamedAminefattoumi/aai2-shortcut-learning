@@ -51,6 +51,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+slides/
+*.pdf
 
 # Translations
 *.mo
@@ -224,6 +226,9 @@ data/
 # Saved model weights, too big for Git
 *.pt
 *.pth
+!checkpoints/none_p099_seed0.pth
+!checkpoints/augmentation_p099_seed0.pth
+!checkpoints/reweighting_p099_seed0.pth
 # Local copies of the guide and papers
 docs/*.pdf
 
