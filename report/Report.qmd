@@ -19,21 +19,30 @@ bibliography: references.bib
 ---
 
 # Introduction
+-> why is this relevant at all?
 
 # Literature Review
+-> how has this been discussed before? 
 
-# Dataset Preparation
+# Methods
+## Dataset Preparation
+-> whort intro of the dataset 
 
-# Model Training and Evaluation
+## Model Training and Evaluation
+-> what model did we use
+-> setup of the expiriment 
 
-# Data mitigation
+# Results
+-> give use the results and do not discuss them in terms of theories, just show what you found 
+## Data mitigation
 
-# Model mitigation
+## Model mitigation
 
-Concerning the mitigation of shortcut learning through model features, 
+## Explainable AI 
 
+# Discussion section
+-> link your results to the theory, what is unexpected 
 
-# Conclusion
 
 # References
 
