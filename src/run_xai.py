@@ -17,6 +17,7 @@ from src.xai import (
 from src.lime_xai import (
     get_explanation,
     visualize_explanation_lime,
+    visualize_heatmap_lime,
 )
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -195,6 +196,13 @@ def main():
             model_name=name,
             true_label=selected_label,
             save_path=f"{OUTPUT_DIR}/{name.lower()}_lime.png",
+        )
+
+        visualize_heatmap_lime(
+            explanation=explanation,
+            model_name=name,
+            true_label=selected_label,
+            save_path=f"{OUTPUT_DIR}/{name.lower()}_lime_heatmap.png",
         )
 
         print(f"{name}: prediction = {prediction}")
