@@ -234,7 +234,9 @@ docs/*.pdf
 
 
 
-# Output of "python -m src.run_experiments --quick" (only a code check)
-results/results_quick.csv
+# Outputs of the --quick runs (only a code check, never the real results)
+results/*_quick.csv
+results/summary_quick.md
+results/figures/*_quick.png
 .~lock.*#
 .~lock.*#
